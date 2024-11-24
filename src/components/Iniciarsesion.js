@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import db from "./firebase";
 import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
+import { Row } from "react-bootstrap";
 
-const IniciarSesion = () => {
+export const Iniciarsesion = () => {
   const [email, setEmail] = useState(""); // Correo electrónico
   const [password, setPassword] = useState(""); // Contraseña
   const navigate = useNavigate();
@@ -53,6 +54,7 @@ const IniciarSesion = () => {
   return (
     <div className="container">
       <h1>Iniciar Sesión</h1>
+      <Row>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
           <input
@@ -80,8 +82,10 @@ const IniciarSesion = () => {
           Ingresar
         </button>
       </form>
+      </Row>
     </div>
   );
 };
 
-export default IniciarSesion;
+
+export default Iniciarsesion;
