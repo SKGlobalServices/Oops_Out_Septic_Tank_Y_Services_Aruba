@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
-import { getAnalytics } from "firebase/analytics";
 
 // Configuración de Firebase
 const firebaseConfig = {
@@ -18,7 +17,5 @@ const app = initializeApp(firebaseConfig);
 
 // Obtiene la instancia de Firestore
 const db = getFirestore(app);
-// Google analytics
-const analytics = getAnalytics(app);
 
 export default db;
