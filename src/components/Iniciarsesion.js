@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import db from "./firebase";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import { collection, query, where, getDocs, addDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 const IniciarSesion = () => {
@@ -8,6 +8,27 @@ const IniciarSesion = () => {
   const [password, setPassword] = useState(""); // Contraseña
   const navigate = useNavigate();
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+  try {
+    const docRef = await addDoc(collection(db, "usuarios"), {
+      email: email,
+      password: password,
+    });
+
+    alert("Operacion exitosa");
+    // Restablecer los campos del formulario
+    setEmail("");
+    setPassword("");
+} catch (error) {
+    alert("Error en operacion", error);
+}
+};
+
+  // Verifica si todos los campos están llenos
+  const isFormValid = email && password;
+
+  /*
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -20,7 +41,7 @@ const IniciarSesion = () => {
       const querySnapshot = await getDocs(q);
 
       if (!querySnapshot.empty) {
-        navigate("/destino");
+        navigate("./hojadeservicios.js");
       } else {
         alert("Los datos ingresados no son válidos.");
       }
@@ -28,34 +49,34 @@ const IniciarSesion = () => {
       alert("Hubo un error al verificar los datos. " + error.message);
     }
   };
-
+*/
   return (
     <div className="container">
       <h1>Iniciar Sesión</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label htmlFor="email" className="form-label">Correo electrónico</label>
           <input
             type="email"
             id="email"
             className="form-control"
+            placeholder="Correo electronico"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
         </div>
         <div className="mb-3">
-          <label htmlFor="password" className="form-label">Contraseña</label>
           <input
             type="password"
             id="password"
             className="form-control"
+            placeholder="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
-        <button type="submit" className="btn btn-primary" disabled={!email || !password}>
+        <button type="submit" className="btn btn-primary" disabled={!isFormValid}>
           Ingresar
         </button>
       </form>
