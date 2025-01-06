@@ -22,13 +22,25 @@ const App = () => {
       if (snapshot.exists()) {
         const users = snapshot.val();
 
+        // Buscamos el usuario con el email y contraseña proporcionados
         const userFound = Object.values(users).find(
           (user) => user.email === email && user.password === password
         );
 
         if (userFound) {
+          // Almacenamos el usuario en el localStorage
           localStorage.setItem("user", JSON.stringify(userFound));
-          navigate("/homepage");
+
+          // Verificar el rol del usuario (admin o user)
+          if (userFound.role === "admin") {
+            // Si el rol es admin, redirigir a homepage (administrador)
+            localStorage.setItem("isAdmin", "true");
+            navigate("/homepage"); // Redirigir a la página de administrador
+          } else {
+            // Si el rol no es admin, redirigir a homepageuser (usuario común)
+            localStorage.setItem("isAdmin", "false");
+            navigate("/homepageuser"); // Redirigir a la página de usuario normal
+          }
         } else {
           setMessage("Invalid email or password.");
         }

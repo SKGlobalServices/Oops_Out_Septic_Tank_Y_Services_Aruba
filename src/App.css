@@ -1,5 +1,3 @@
-/* App.css */
-
 /* Estilos generales */
 body {
   font-family: 'Roboto', sans-serif;
@@ -14,20 +12,163 @@ body {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
+  overflow: hidden;
+  transition: background 0.5s ease-in-out;
+  color: white;
+  box-sizing: border-box;
 }
 
-/* Estilos para la barra lateral */
+/* Agregar un fondo dinámico con colores vivos */
+@keyframes backgroundAnimation {
+  0% {
+    background-color: #f4f4f9;
+  }
+  50% {
+    background-color: #ffcccb;
+  }
+  100% {
+    background-color: #f4f4f9;
+  }
+}
+
+body {
+  animation: backgroundAnimation 15s infinite alternate;
+}
+
+/* Estilo de los contenedores principales */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  max-width: 480px;
+  width: 100%;
+  animation: fadeIn 0.6s ease-out;
+  transition: transform 0.3s ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.form-container:hover {
+  transform: translateY(-5px);
+}
+
+.form-container::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(90deg, #007bff, #e41c1c);
+  bottom: 0;
+  left: 0;
+  transition: opacity 0.3s ease;
+}
+
+.form-container:hover::after {
+  opacity: 0.8;
+}
+
+/* Estilo para el logo */
+#logologin {
+  max-width: 280px;
+  margin-bottom: 25px;
+  transition: transform 0.3s ease, filter 0.3s ease;
+  border-radius: 15px;
+  filter: brightness(1.0);
+}
+
+#logologin:hover {
+  transform: scale(1.10);
+  filter: brightness(1.2);
+}
+
+/* Estilos del formulario */
+.form-login {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+/* Estilo de los campos de entrada */
+.input-group label {
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 8px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group input:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+}
+
+/* Botón de inicio de sesión */
+#passwordbutton {
+  background-color: #007bff;
+  color: white;
+  padding: 14px 22px;
+  border-radius: 8px;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+#passwordbutton:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+#passwordbutton:active {
+  transform: scale(1);
+}
+
+/* Animación para el mensaje de error */
+.danger {
+  color: red;
+  font-size: 18px;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+  animation: slideUp 0.4s ease-out;
+  line-height: 1.5;
+}
+
+/* Barra lateral */
 .sidebar {
   position: fixed;
   top: 0;
-  left: -250px;
+  left: -300px;
   height: 100%;
-  width: 250px;
-  background-color: white;
-  color: black;
+  width: 300px;
+  background-color: #fff;
+  color: #333;
   transition: left 0.3s ease-in-out;
   padding-top: 60px;
   z-index: 1000;
+  box-shadow: 3px 0 15px rgba(0, 0, 0, 0.2);
+  overflow-y: auto;
+  padding-bottom: 50px;
 }
 
 .sidebar.show {
@@ -35,84 +176,96 @@ body {
 }
 
 .sidebar .menu-item {
-  color: white;
-  background-color: #555;
-  border: none;
-  padding: 15px 15px;
-  margin-top: 15px;
+  color: #333;
+  background-color: #f4f4f9;
+  padding: 18px 22px;
+  margin-top: 20px;
   text-align: left;
   width: 100%;
   font-size: 18px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  border-radius: 10px;
+  transition: background-color 0.3s, color 0.3s, transform 0.3s ease;
 }
 
 .sidebar .menu-item:hover {
-  background-color: #353535;
+  background-color: #007bff;
+  color: white;
+  transform: translateX(5px);
 }
 
-/* Botón de la barra lateral */
+/* Icono de la barra lateral */
 .show-sidebar-button {
   position: absolute;
   top: 20px;
   left: 15px;
-  font-size: 30px;
+  font-size: 32px;
   color: #333;
-  background-color: white;
-  border-radius: 5px;
-  border-color: white;
+  background-color: transparent;
+  border: none;
   cursor: pointer;
   z-index: 2000;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .show-sidebar-button:hover {
-  color: #00a2ff;
+  color: #007bff;
+  transform: rotate(45deg);
 }
 
-/* Estilo de la tarjeta principal */
+/* Tarjeta principal */
 .homepage-card {
   background: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-  padding: 30px;
-  margin-left: 100px;
-  width: calc(100% - 270px);
-  transition: margin-left 0.3s ease-in-out;
+  border-radius: 18px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  padding: 40px;
+  margin-left: 120px;
+  width: calc(100% - 320px);
+  transition: margin-left 0.3s ease-in-out, box-shadow 0.3s ease;
   animation: fadeIn 1s ease-out;
+}
+
+.homepage-card:hover {
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.15);
 }
 
 /* Título de la página */
 .homepage-card h1 {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   text-align: center;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.5px;
+  transition: color 0.3s ease;
 }
 
-/* Contenedor de la tabla */
+.homepage-card h1:hover {
+  color: #007bff;
+}
+
+/* Tabla */
 .table-container {
-  margin-top: 20px;
-  padding: 10px;
+  margin-top: 30px;
+  padding: 25px;
   background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
   border-top: 3px solid #007bff;
+  animation: fadeIn 1s ease-out;
 }
 
-/* Botón de creación de tabla */
 .create-table-button {
   background-color: #28a745;
   color: white;
   border: none;
-  padding: 12px 20px;
-  border-radius: 8px;
+  padding: 14px 24px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
   transition: background-color 0.3s, transform 0.2s ease-in-out;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   display: block;
   margin-left: auto;
   margin-right: auto;
@@ -127,28 +280,27 @@ body {
   transform: scale(1);
 }
 
-/* Estilos para la tabla */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-  font-size: 16px;
+  margin-top: 25px;
+  font-size: 18px;
   border-radius: 8px;
+  overflow: hidden;
 }
 
 th, td {
-  padding: 15px 20px;
+  padding: 18px 22px;
   text-align: left;
   border-radius: 10px;
-  font-size: 14px;
   font-weight: 500;
 }
 
 th {
   background-color: #007bff;
   color: white;
-  padding: 5px 10px;
-  font-size: 18px;
+  padding: 8px 12px;
+  font-size: 20px;
   text-transform: uppercase;
 }
 
@@ -160,7 +312,7 @@ td {
 
 tr:hover td {
   background-color: #f1f1f1;
-  transform: translateY(2px);
+  transform: translateY(3px);
 }
 
 tr:nth-child(odd) td {
@@ -169,25 +321,27 @@ tr:nth-child(odd) td {
 
 input[type="email"], input[type="password"] {
   width: 100%;
-  padding: 12px;
-  border-radius: 8px;
+  padding: 14px;
+  border-radius: 10px;
   border: 1px solid #ddd;
-  margin-bottom: 12px;
-  font-size: 14px;
+  margin-bottom: 15px;
+  font-size: 16px;
   transition: border-color 0.3s ease;
 }
 
 input[type="email"]:focus, input[type="password"]:focus {
   border-color: #007bff;
   outline: none;
+  box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
 }
 
+/* Botón para ver/ocultar contraseña */
 .toggle-password-button {
   background-color: #f1f1f1;
   color: #007bff;
   border: none;
-  padding: 8px 16px;
-  font-size: 14px;
+  padding: 10px 18px;
+  font-size: 16px;
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
@@ -197,15 +351,7 @@ input[type="email"]:focus, input[type="password"]:focus {
   background-color: #ddd;
 }
 
-.error-message {
-  color: red;
-  font-size: 18px;
-  text-align: center;
-  margin-top: 20px;
-  font-weight: bold;
-}
-
-/* Mejorar la visibilidad de la barra lateral y los elementos en la vista de teléfono móvil */
+/* Estilos responsivos */
 @media (max-width: 768px) {
   .homepage-card {
     margin-left: 0;
@@ -213,14 +359,14 @@ input[type="email"]:focus, input[type="password"]:focus {
   }
 
   .show-sidebar-button {
-    font-size: 25px;
+    font-size: 28px;
     left: 10px;
     top: 10px;
   }
 
   .sidebar {
-    left: -200px;
-    width: 200px;
+    left: -250px;
+    width: 250px;
   }
 
   .sidebar.show {
@@ -228,31 +374,88 @@ input[type="email"]:focus, input[type="password"]:focus {
   }
 
   .table-container {
-    padding: 15px;
+    padding: 20px;
   }
 
   table {
-    font-size: 14px;
+    font-size: 16px;
   }
 
   th, td {
-    padding: 10px 15px;
+    padding: 12px 16px;
   }
 
   .create-table-button {
-    padding: 10px 18px;
-    font-size: 14px;
+    padding: 12px 20px;
+    font-size: 16px;
   }
 }
 
-/* Animación fadeIn para la tarjeta */
+/* Animación fadeIn */
 @keyframes fadeIn {
   0% {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-15px);
   }
   100% {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Animación slideUp */
+@keyframes slideUp {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animación para la aparición del sidebar */
+@keyframes slideSidebar {
+  0% {
+    left: -300px;
+  }
+  100% {
+    left: 0;
+  }
+}
+
+.sidebar.show {
+  animation: slideSidebar 0.3s ease-in-out;
+}
+
+/* Nueva sección de animación de elementos flotantes */
+.floating-element {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: floating 5s infinite ease-in-out;
+  z-index: -1;
+}
+
+@keyframes floating {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+  50% {
+    transform: translate(-50%, -45%) rotate(180deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
+
+/* Estilos para el encabezado */
+.header {
+  text-align: center;
+  font-size: 2rem;
+  color: #007bff;
+  font-weight: bold;
+  margin-bottom: 50px;
 }

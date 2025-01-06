@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { database } from "./firebaseConfig"; 
+import { database } from "./firebaseConfig"; // Ajusta la ruta si es necesario
 import { ref, set, push, remove, update, onValue } from "firebase/database";
 
-const Homepage = () => {
+const Homepageuser = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
-  const [data, setData] = useState([]); 
+  const [data, setData] = useState([]); // Inicializamos como un array vacío
   const [showSidebar, setShowSidebar] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const sidebarRef = useRef(null);
@@ -16,18 +16,11 @@ const Homepage = () => {
     navigate("/");
   };
 
-  // Verificar si el usuario tiene rol de administrador
-  useEffect(() => {
-    if (!user || user.role !== 'admin') {
-      // Redirigir al usuario a la página de usuario si no es administrador
-      navigate("/homepageuser");
-    }
-  }, [user, navigate]);
-
   // Suscribirse a los datos en tiempo real
   useEffect(() => {
     const dbRef = ref(database, "users");
 
+    // Escuchar los cambios en la base de datos
     const unsubscribe = onValue(dbRef, (snapshot) => {
       if (snapshot.exists()) {
         setData(Object.entries(snapshot.val()));
@@ -36,11 +29,13 @@ const Homepage = () => {
       }
     });
 
+    // Limpieza: desuscribirse al desmontar el componente
     return () => {
       unsubscribe();
     };
   }, []);
 
+  // Crear un nuevo usuario en la base de datos de Firebase
   const addUser = (email, password) => {
     const dbRef = ref(database, "users");
     const newUserRef = push(dbRef);
@@ -52,6 +47,7 @@ const Homepage = () => {
     });
   };
 
+  // Eliminar un usuario de la base de datos de Firebase
   const deleteUser = (id) => {
     const dbRef = ref(database, `users/${id}`);
     remove(dbRef).catch((error) => {
@@ -59,6 +55,7 @@ const Homepage = () => {
     });
   };
 
+  // Manejar la actualización de un campo específico
   const handleFieldChange = (id, field, value) => {
     const dbRef = ref(database, `users/${id}`);
     update(dbRef, { [field]: value }).catch((error) => {
@@ -118,7 +115,7 @@ const Homepage = () => {
       </div>
 
       <div className="homepage-card">
-        <h1 className="homepage-title">Hoja De Servicios Administrador</h1>
+        <h1 className="homepage-title">Hoja De Servicios Usuario</h1>
         <div className="table-container">
           <button
             className="create-table-button"
@@ -188,4 +185,4 @@ const Homepage = () => {
   );
 };
 
-export default Homepage;
+export default Homepageuser;
