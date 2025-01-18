@@ -2,7 +2,7 @@
   "name": "oopsoutseptictankyservicesaruba",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://skglobalservices.github.io/OopsOutSepticTankYServicesAruba/",
+  "homepage": "https://skglobalservices.github.io/OopsOutSepticTankYServicesAruba",
   "dependencies": {
     "bootstrap": "^5.3.3",
     "firebase": "^11.1.0",

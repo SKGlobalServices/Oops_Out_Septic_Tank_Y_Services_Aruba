@@ -1,26 +1,40 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { database } from "./firebaseConfig"; // Ajusta la ruta si es necesario
+import { database } from "./firebaseConfig";
 import { ref, set, push, remove, update, onValue } from "firebase/database";
 
 const Homepageuser = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
-  const [data, setData] = useState([]); // Inicializamos como un array vacío
+  const [data, setData] = useState([]);
   const [showSidebar, setShowSidebar] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const sidebarRef = useRef(null);
 
-  const handleLogout = () => {
-    localStorage.removeItem("user");
-    navigate("/");
-  };
+  const [currentDateTime, setCurrentDateTime] = useState({
+    date: new Date().toLocaleDateString(),
+    time: new Date().toLocaleTimeString(),
+  });
 
-  // Suscribirse a los datos en tiempo real
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentDateTime({
+        date: new Date().toLocaleDateString(),
+        time: new Date().toLocaleTimeString(),
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (!user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
   useEffect(() => {
     const dbRef = ref(database, "users");
 
-    // Escuchar los cambios en la base de datos
     const unsubscribe = onValue(dbRef, (snapshot) => {
       if (snapshot.exists()) {
         setData(Object.entries(snapshot.val()));
@@ -29,25 +43,22 @@ const Homepageuser = () => {
       }
     });
 
-    // Limpieza: desuscribirse al desmontar el componente
-    return () => {
-      unsubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
-  // Crear un nuevo usuario en la base de datos de Firebase
+  const handleLogout = () => {
+    localStorage.removeItem("user");
+    navigate("/");
+  };
+
   const addUser = (email, password) => {
     const dbRef = ref(database, "users");
     const newUserRef = push(dbRef);
-    set(newUserRef, {
-      email: email,
-      password: password,
-    }).catch((error) => {
+    set(newUserRef, { email, password }).catch((error) => {
       console.error("Error adding user: ", error);
     });
   };
 
-  // Eliminar un usuario de la base de datos de Firebase
   const deleteUser = (id) => {
     const dbRef = ref(database, `users/${id}`);
     remove(dbRef).catch((error) => {
@@ -55,7 +66,6 @@ const Homepageuser = () => {
     });
   };
 
-  // Manejar la actualización de un campo específico
   const handleFieldChange = (id, field, value) => {
     const dbRef = ref(database, `users/${id}`);
     update(dbRef, { [field]: value }).catch((error) => {
@@ -63,13 +73,9 @@ const Homepageuser = () => {
     });
   };
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
+  const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
-  const toggleSidebar = () => {
-    setShowSidebar(!showSidebar);
-  };
+  const toggleSidebar = () => setShowSidebar(!showSidebar);
 
   const handleClickOutside = (e) => {
     if (
@@ -109,13 +115,16 @@ const Homepageuser = () => {
       </button>
 
       <div ref={sidebarRef} className={`sidebar ${showSidebar ? "show" : ""}`}>
-        <button className="menu-item" onClick={handleLogout}>
-          Logout
-        </button>
+        <button className="menu-item" onClick={() => navigate("/homepageuser")}>Hoja De Servicios</button>
+        <button className="menu-item" onClick={handleLogout}>Logout</button>
       </div>
 
       <div className="homepage-card">
-        <h1 className="homepage-title">Hoja De Servicios Usuario</h1>
+        <div className="current-date">
+          <div>{currentDateTime.date}</div>
+          <div>{currentDateTime.time}</div>
+        </div>
+
         <div className="table-container">
           <button
             className="create-table-button"
@@ -156,7 +165,7 @@ const Homepageuser = () => {
                         }
                       />
                       <button
-                        className="toggle-password-button"
+                        className="show-password-button"
                         onClick={togglePasswordVisibility}
                       >
                         {showPassword ? "Hide" : "Show"}
@@ -173,7 +182,7 @@ const Homepageuser = () => {
                   </tr>
                 ))
               ) : (
-                <tr>
+                <tr className="no-data">
                   <td colSpan="4">No data available</td>
                 </tr>
               )}
