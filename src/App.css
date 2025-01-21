@@ -12,25 +12,24 @@ body {
   background-position: center;
   background-attachment: fixed;
   overflow: hidden;
-  transition: background 0.5s ease-in-out;
   color: white;
   box-sizing: border-box;
 }
 
-@keyframes backgroundAnimation {
-  0% {
-    background-color: #f4f4f9;
-  }
-  50% {
-    background-color: #ffcccb;
-  }
-  100% {
-    background-color: #f4f4f9;
-  }
-}
-
 body {
   animation: backgroundAnimation 15s infinite alternate;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Contenedores principales */
@@ -41,24 +40,25 @@ body {
   justify-content: center;
   background-color: rgba(255, 255, 255, 0.85);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  padding: 40px;
+  padding: 35px;
+  padding-bottom: 15px;
   max-width: 480px;
   width: 100%;
   position: relative;
   top: 0;
-  border-radius: 20px; 
+  border-radius: 20px;
   animation: fadeIn 0.6s ease-out;
   transition: top 0.2s ease, transform 0.3s ease;
 }
 
 .form-container:hover {
-  top: 10px;
+  top: 8px;
 }
 
 /* Logo */
 #logologin {
-  max-width: 280px;
-  margin-bottom: 25px;
+  max-width: 250px;
+  margin-bottom: 8x;
   transition: transform 0.3s ease, filter 0.3s ease;
   border-radius: 15px;
   filter: brightness(1);
@@ -87,7 +87,7 @@ body {
 }
 
 .input-group input {
-  width: 100%;
+  width: 95%;
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #ddd;
@@ -105,7 +105,9 @@ body {
 #passwordbutton {
   background-color: #007bff;
   color: white;
-  padding: 12px 20px;
+  padding: 10px 50px;
+  width: auto;
+  max-width: 220px;
   border-radius: 8px;
   border: none;
   font-size: 14px;
@@ -113,6 +115,8 @@ body {
   transition: background-color 0.3s, transform 0.2s ease-in-out;
   box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
   text-transform: uppercase;
+  display: block;
+  margin: 0 auto;
 }
 
 #passwordbutton:hover {
@@ -122,6 +126,37 @@ body {
 
 #passwordbutton:active {
   transform: scale(1);
+}
+
+/* Botón de inicio de Google */
+#google-login-button {
+  background-color: #4285f4;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 15px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s ease-in-out;
+  box-shadow: 0 4px 8px rgba(66, 133, 244, 0.3);
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#google-login-button:hover {
+  background-color: #3367d6;
+  transform: scale(1.05);
+}
+
+#google-login-button:active {
+  transform: scale(1);
+}
+
+#google-login-button svg {
+  margin-right: 8px;
 }
 
 /* Mensaje de error */
@@ -196,6 +231,19 @@ body {
   background-color: #f0f0f0;
 }
 
+.logo-slidebar {
+  margin-left: 18%;
+  width: 180px;
+}
+
+/* Nombre del usuario */
+.sidebar p {
+  text-align: center;
+  font-size: 15px;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
 /* Tarjeta principal */
 .homepage-card {
   background: #fff;
@@ -227,7 +275,6 @@ body {
   color: white;
   border: none;
   padding: 10px 20px;
-  border-radius: 10px;
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s, transform 0.2s ease-in-out;
@@ -253,7 +300,6 @@ body {
   -webkit-overflow-scrolling: touch;
   padding: 15px;
   background-color: #f9f9f9;
-  border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
   border-top: 3px solid #000000;
   animation: fadeIn 1s ease-out;
@@ -276,8 +322,6 @@ body {
 th,
 td {
   padding: 8px 6px;
-  text-align: left;
-  border-radius: 6px;
   font-weight: 400;
   word-wrap: break-word;
 }
@@ -290,23 +334,24 @@ th {
   margin-right: 5px;
   font-size: 14px;
   text-transform: uppercase;
+  text-align: center; /* Centra el contenido de las celdas de encabezado */
 }
 
 td {
-  padding: 12px;
+  padding: 6px;
   text-align: left;
-  border-radius: 8px;
   background-color: #f9f9f9;
   box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
+  color: #000000;
+  font-size: 15px;
 }
 
 td input {
-  width: 100%;
+  width: 120%;
   padding: 10px;
-  border: 1px solid #007bff;
-  border-radius: 6px;
+  border: 1px solid #f9f9f9;
   font-size: 12px;
-  background-color: #fff;
+  background-color: #f9f9f9;
   box-sizing: border-box;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
@@ -324,9 +369,8 @@ td input:invalid {
 select {
   width: 100%;
   padding: 9px;
-  border: 1px solid #007bff;
-  border-radius: 6px;
-  background-color: #fff;
+  border: 1px solid #f9f9f9;
+  background-color: #f9f9f9;
   font-size: 12px;
   box-sizing: border-box;
   transition: border-color 0.3s, box-shadow 0.3s;
@@ -349,15 +393,122 @@ option {
   transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-tr:hover td {
-  background-color: #f1f1f1;
+tr.efectivo td {
+  background-color: #8e44ad;
+}
+
+tr.cancelado td {
+  background-color: #e74c3c;
+}
+
+tr.credito td {
+  background-color: #2ecc71;
+}
+
+/* Estilos para las celdas de "Pago" */
+.pago-cell {
+  background-color: #2ecc71; /* Verde para "Pago" */
+}
+
+.debe-cell {
+  background-color: #e74c3c; /* Rojo para "Debe" */
+}
+
+.pendiente-fin-de-mes-cell {
+  background-color: #f1c40f; /* Amarillo para "Pendiente Fin De Mes" */
+}
+
+.pendiente-cell {
+  background-color: #f1c40f; /* Amarillo para "Pendiente" */
+}
+
+/* Estilos adicionales si es necesario */
+table.service-table td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+table.service-table input,
+table.service-table select {
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+/* Styles for the filters container */
+.filters {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+
+/* Styles for the filter button */
+.filter-button {
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.filter-button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Styles for the datepicker container */
+.datepicker-container {
+  position: relative;
+}
+
+.calendar-input {
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  background-color: #fff;
+  width: 150px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Styles for the dropdown */
+.dropdown {
+  border: 1px solid #ced4da;
+  border-radius: 5px;
+  padding: 0.5rem;
+  font-size: 1rem;
+  background-color: #fff;
+  color: #495057;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.dropdown:focus {
+  border-color: #80bdff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Option styles */
+.dropdown option {
+  color: #495057;
+  background-color: #fff;
+}
+
+.tdth-table {
+  padding-left: 20px;
+  padding-right: 20px;
 }
 
 /* Estilo para los botones */
 button.delete-button {
-  background-color: #ff6347; /* Color rojo para el botón */
+  background-color: #ff6347;
   color: #fff;
-  border: none;
   padding: 6px 12px;
   cursor: pointer;
   border-radius: 5px;
@@ -366,25 +517,78 @@ button.delete-button {
 }
 
 button.delete-button:hover {
-  background-color: #ff3300; /* Rojo más oscuro al pasar el mouse */
+  background-color: #ff3300;
 }
 
 /* Estilos móviles */
 @media screen and (max-width: 768px) and (orientation: portrait) {
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(255, 255, 255, 0.85);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    padding-bottom: 25px;
+    max-width: 100%;
+    width: 90%;
+    position: relative;
+    top: 10%;
+    border-radius: 20px;
+    animation: fadeIn 0.6s ease-out;
+    transition: top 0.2s ease, transform 0.3s ease;
+  }
+
+  .form-container input,
+  .form-container button {
+    width: 90%;
+    padding: 12px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+  }
+
+  .form-container button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  .form-container button:hover {
+    background-color: #0056b3;
+  }
+
+  /* Animación de aparición */
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(-50px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   /* Barra lateral */
   .sidebar {
     position: fixed;
     top: 0;
-    left: -300px;
+    left: -4000px; /* Aumentado por 10 */
     height: 100%;
     background-color: #fff;
     color: #333;
     transition: left 0.3s ease-in-out;
-    padding-top: 60px;
+    padding-top: 600px; /* Aumentado por 10 */
     z-index: 1000;
-    box-shadow: 3px 0 15px rgba(0, 0, 0, 0.2);
+    box-shadow: 3px 0 150px rgba(0, 0, 0, 0.2); /* Aumentado por 10 */
     overflow-y: auto;
-    padding-bottom: 50px;
+    padding-bottom: 500px; /* Aumentado por 10 */
+    width: 80%; /* Barra lateral más ancha */
   }
 
   .sidebar.show {
@@ -394,14 +598,14 @@ button.delete-button:hover {
   .sidebar .menu-item {
     color: #333;
     background-color: #f4f4f9;
-    padding: 18px 22px;
-    margin-top: 20px;
-    margin-left: 20px;
+    padding: 60px 80px; /* Más Reducido */
+    margin-top: 50px; /* Más Reducido */
+    margin-left: 50px; /* Más Reducido */
+    margin-right: 150px;
     text-align: left;
-    width: 80%;
-    font-size: 14px;
+    font-size: 45px; /* Más Reducido */
     cursor: pointer;
-    border-radius: 10px;
+    border-radius: 30px; /* Más Reducido */
     transition: background-color 0.3s, color 0.3s, transform 0.3s ease;
   }
 
@@ -439,7 +643,7 @@ button.delete-button:hover {
   }
 
   .current-date {
-    font-size: 42px; /* Aumenté el tamaño de la fuente aún más */
+    font-size: 42px;
     text-align: center;
   }
 
@@ -463,8 +667,7 @@ button.delete-button:hover {
     min-width: 750px;
     width: auto;
     border-collapse: collapse;
-    font-size: 38px; /* Aumenté el tamaño de la fuente aún más */
-    border-radius: 8px;
+    font-size: 38px;
     table-layout: fixed;
   }
 
@@ -472,7 +675,6 @@ button.delete-button:hover {
   td {
     padding: 8px 6px;
     text-align: left;
-    border-radius: 6px;
     font-weight: 400;
     word-wrap: break-word;
   }
@@ -490,7 +692,6 @@ button.delete-button:hover {
   td {
     padding: 12px;
     text-align: left;
-    border-radius: 8px;
     background-color: #f9f9f9;
     box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.05);
   }
@@ -499,7 +700,6 @@ button.delete-button:hover {
     width: 100%;
     padding: 10px;
     border: 1px solid #007bff;
-    border-radius: 6px;
     font-size: 24px;
     background-color: #fff;
     box-sizing: border-box;
@@ -520,7 +720,6 @@ button.delete-button:hover {
     width: 100%;
     padding: 14px;
     border: 1px solid #007bff;
-    border-radius: 6px;
     background-color: #fff;
     font-size: 24px;
     box-sizing: border-box;
@@ -537,7 +736,6 @@ button.delete-button:hover {
     width: 100%;
     padding: 14px;
     border: 2px solid #007bff;
-    border-radius: 6px;
     background-color: #fff;
     font-size: 14px;
     box-sizing: border-box;
@@ -553,7 +751,6 @@ button.delete-button:hover {
     color: white;
     border: none;
     padding: 22px 44px;
-    border-radius: 10px;
     cursor: pointer;
     font-size: 42px;
     transition: background-color 0.3s, transform 0.2s ease-in-out;
@@ -578,6 +775,10 @@ button.delete-button:hover {
   cursor: pointer;
   font-size: 28px;
   transition: background-color 0.3s, transform 0.2s ease-in-out;
+}
+
+#delete-button-fechas {
+  margin-left: 6%;
 }
 
 .delete-button:hover {

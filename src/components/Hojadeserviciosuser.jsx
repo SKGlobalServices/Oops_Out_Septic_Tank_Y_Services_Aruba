@@ -115,8 +115,16 @@ const Homepageuser = () => {
       </button>
 
       <div ref={sidebarRef} className={`sidebar ${showSidebar ? "show" : ""}`}>
-        <button className="menu-item" onClick={() => navigate("/homepageuser")}>Hoja De Servicios</button>
-        <button className="menu-item" onClick={handleLogout}>Logout</button>
+        <div>
+          {/* Mostrar el nombre del usuario si está disponible */}
+          {user && user.name ? <p>Hola!, {user.name}</p> : <p>No user</p>}
+        </div>
+        <button className="menu-item" onClick={() => navigate("/homepageuser")}>
+          Hoja De Servicios
+        </button>
+        <button className="menu-item" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
 
       <div className="homepage-card">

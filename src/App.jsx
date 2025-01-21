@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import "./App.css";
 import { ref, get, child } from "firebase/database";
-import { database } from "./components/firebaseConfig";
+import { database, auth, provider, firestore } from "./components/firebaseConfig"; // Asegúrate de que los imports son correctos
+import { signInWithPopup } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import logo from "./assets/img/logo.jpg";
 
@@ -11,6 +12,49 @@ const App = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
+  // Login con Google
+  const handleGoogleLogin = async () => {
+    try {
+      // Realizar la autenticación con Google
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      const emailFromGoogle = user.email;
+
+      // Verificar si el correo de Google está registrado en Realtime Database
+      const dbRef = ref(database);
+      const snapshot = await get(child(dbRef, "users"));
+
+      if (snapshot.exists()) {
+        const users = snapshot.val();
+
+        // Buscar al usuario en Realtime Database usando el correo de Google
+        const userFound = Object.values(users).find((user) => user.email === emailFromGoogle);
+
+        if (userFound) {
+          // Almacenar el usuario en localStorage
+          localStorage.setItem("user", JSON.stringify(userFound));
+
+          // Verificar el rol del usuario en Realtime Database
+          localStorage.setItem("isAdmin", userFound.role === "admin" ? "true" : "false");
+
+          // Redirigir según el rol
+          if (userFound.role === "admin") {
+            navigate("/homepage");
+          } else {
+            navigate("/homepageuser");
+          }
+        } else {
+          setMessage("User is not registered in the system.");
+        }
+      } else {
+        setMessage("No users found in the Realtime Database.");
+      }
+    } catch (error) {
+      setMessage(`An error occurred while logging in with Google: ${error.message}`);
+    }
+  };
+
+  // Login normal con email y contraseña
   const handleLogin = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -22,24 +66,21 @@ const App = () => {
       if (snapshot.exists()) {
         const users = snapshot.val();
 
-        // Buscamos el usuario con el email y contraseña proporcionados
+        // Buscar el usuario con el email y contraseña proporcionados
         const userFound = Object.values(users).find(
           (user) => user.email === email && user.password === password
         );
 
         if (userFound) {
-          // Almacenamos el usuario en el localStorage
+          // Almacenar el usuario en localStorage
           localStorage.setItem("user", JSON.stringify(userFound));
+          localStorage.setItem("isAdmin", userFound.role === "admin" ? "true" : "false");
 
-          // Verificar el rol del usuario (admin o user)
+          // Redirigir según el rol
           if (userFound.role === "admin") {
-            // Si el rol es admin, redirigir a homepage (administrador)
-            localStorage.setItem("isAdmin", "true");
-            navigate("/homepage"); // Redirigir a la página de administrador
+            navigate("/homepage");
           } else {
-            // Si el rol no es admin, redirigir a homepageuser (usuario común)
-            localStorage.setItem("isAdmin", "false");
-            navigate("/homepageuser"); // Redirigir a la página de usuario normal
+            navigate("/homepageuser");
           }
         } else {
           setMessage("Invalid email or password.");
@@ -47,9 +88,7 @@ const App = () => {
       } else {
         setMessage("No users found in the database.");
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      setMessage("An error occurred while logging in.");
+    } catch (error) {      setMessage("An error occurred while logging in.");
     }
   };
 
@@ -86,6 +125,7 @@ const App = () => {
             Login
           </button>
         </form>
+        <button id="google-login-button" onClick={handleGoogleLogin}>Login with Google</button>
         {message && <p className="danger">{message}</p>}
       </div>
     </div>

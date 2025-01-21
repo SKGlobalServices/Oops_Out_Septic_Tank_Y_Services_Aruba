@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { database } from "./firebaseConfig";
 import { ref, set, push, remove, update, onValue } from "firebase/database";
-import TransferData from "./Transferdata";
+import TransferData2 from "./Transferdata";
 import logo from "../assets/img/logo.jpg";
 
-const Homepage = () => {
+
+const Hojamañana = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const [data, setData] = useState([]);
@@ -49,7 +50,7 @@ const Homepage = () => {
   }, [user, navigate]);
 
   useEffect(() => {
-    const dbRef = ref(database, "data");
+    const dbRef = ref(database, "hojamañana");
     const unsubscribe = onValue(dbRef, (snapshot) => {
       if (snapshot.exists()) {
         const fetchedData = Object.entries(snapshot.val());
@@ -83,7 +84,7 @@ const Homepage = () => {
     efectivo,
     factura
   ) => {
-    const dbRef = ref(database, "data");
+    const dbRef = ref(database, "hojamañana");
     const newDataRef = push(dbRef);
     set(newDataRef, {
       realizadopor,
@@ -103,14 +104,14 @@ const Homepage = () => {
   };
 
   const deleteData = (id) => {
-    const dbRef = ref(database, `data/${id}`);
+    const dbRef = ref(database, `hojamañana/${id}`);
     remove(dbRef).catch((error) => {
       console.error("Error deleting data: ", error);
     });
   };
 
   const handleFieldChange = (id, field, value) => {
-    const dbRef = ref(database, `data/${id}`);
+    const dbRef = ref(database, `hojamañana/${id}`);
     update(dbRef, { [field]: value }).catch((error) => {
       console.error("Error updating data: ", error);
     });
@@ -170,12 +171,12 @@ const Homepage = () => {
 
   return (
     <div className="homepage-container">
-      <TransferData />
+      <TransferData2 />
       <button className="show-sidebar-button" onClick={toggleSidebar}>
         ☰
       </button>
       <div ref={sidebarRef} className={`sidebar ${showSidebar ? "show" : ""}`}>
-        <div>
+      <div>
           <h1>
             <img
               src={logo}
@@ -213,7 +214,9 @@ const Homepage = () => {
         </div>
         <button
           className="create-table-button"
-          onClick={() => addData("", "", "", "", "", "", "", "", "", "", "")}
+          onClick={() =>
+            addData("", "", "", "", "", "", "", "", "", "", "", "")
+          }
         >
           Add New Data
         </button>
@@ -316,13 +319,16 @@ const Homepage = () => {
                         <select
                           value={item.pago}
                           onChange={(e) =>
-                            handleFieldChange(id, "pago", e.target.value)
+                            handleFieldChange(id, "valor", e.target.value)
                           }
                         >
                           <option value=""></option>
-                          <option value="credito">Crédito</option>
-                          <option value="cancelado">Cancelado</option>
-                          <option value="efectivo">Efectivo</option>
+                          <option value="Debe">Debe</option>
+                          <option value="Pago">Pago</option>
+                          <option value="Pendiente">Pendiente</option>
+                          <option value="Pendiente Fin De Mes">
+                            Pendiete Fin De Mes
+                          </option>
                         </select>
                       </td>
                       <td>
@@ -394,4 +400,4 @@ const Homepage = () => {
   );
 };
 
-export default Homepage;
+export default Hojamañana;
