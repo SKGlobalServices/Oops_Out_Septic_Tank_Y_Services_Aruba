@@ -225,24 +225,39 @@ const Hojadefechas = () => {
           </h1>
         </div>
         <div>
-          {/* Mostrar el nombre del usuario si está disponible */}
           {user && user.name ? <p>Hola!, {user.name}</p> : <p>No user</p>}
         </div>
         <button className="menu-item" onClick={() => navigate("/homepage")}>
-          Hoja De Servicios Administrador
+          Servicios De Hoy
         </button>
         <button className="menu-item" onClick={() => navigate("/hojamañana")}>
-          Hoja Mañana Administrador
+          Servicios De Mañana
         </button>
         <button className="menu-item" onClick={() => navigate("/hojadefechas")}>
-          Hoja De Fechas
+          Agenda Dinamica
+        </button>
+        <button className="menu-item" onClick={() => navigate("/clientes")}>
+          Clientes "Desarrollo"
+        </button>
+        <button className="menu-item" onClick={() => navigate("/")}>
+          Reprogramación Automatica "PENDIETE"
+        </button>
+        <button className="menu-item" onClick={() => navigate("/")}>
+          Generar Informes "PENDIETE"
+        </button>
+        <button className="menu-item" onClick={() => navigate("/")}>
+          Configuración "PENDIETE"
         </button>
         <button className="menu-item" onClick={handleLogout}>
           Logout
         </button>
+        <div>
+          <p>© 2025 S&K Global Services</p>
+        </div>
       </div>
 
       <div className="homepage-card">
+        <h1 className="title-page">Agenda Dinamica</h1>
         <div className="current-date">
           <div>{currentDateTime.date}</div>
           <div>{currentDateTime.time}</div>

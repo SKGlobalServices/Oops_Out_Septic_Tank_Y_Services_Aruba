@@ -7,6 +7,7 @@ import Homepage from "./components/Hojadeservicios.jsx";
 import Homepageuser from "./components/Hojadeserviciosuser.jsx";
 import Hojamañana from "./components/Hojamañana.jsx";
 import Hojadefechas from "./components/Hojadefechas.jsx";
+import Clientes from "./components/Hojaclientes.jsx";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -18,6 +19,7 @@ root.render(
       <Route path="/homepageuser" element={<Homepageuser />} />
       <Route path="/hojamañana" element={<Hojamañana />} />
       <Route path="/hojadefechas" element={<Hojadefechas />} />
+      <Route path="/clientes" element={<Clientes />} />
     </Routes>
   </BrowserRouter>
 );

@@ -29,7 +29,7 @@ const TransferData2 = () => {
       }
     };
 
-    // Intervalo para verificar cada minuto
+    // Intervalo para verificar cada segundo
     const interval = setInterval(transferData, 1000);
 
     return () => clearInterval(interval);

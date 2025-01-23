@@ -177,12 +177,12 @@ body {
   left: -300px;
   height: 100%;
   width: 300px;
-  background-color: #fff;
+  background-color: #ececec;
   color: #333;
   transition: left 0.3s ease-in-out;
   padding-top: 60px;
   z-index: 1000;
-  box-shadow: 3px 0 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 10px 0 8px rgba(0, 0, 0, 0.2);
   overflow-y: auto;
   padding-bottom: 50px;
 }
@@ -193,7 +193,7 @@ body {
 
 .sidebar .menu-item {
   color: #333;
-  background-color: #f4f4f9;
+  background-color: #fff;
   padding: 18px 22px;
   margin-top: 20px;
   margin-left: 20px;
@@ -228,7 +228,7 @@ body {
 .show-sidebar-button:hover {
   color: #00b7ff;
   transform: rotate(180deg);
-  background-color: #f0f0f0;
+  background-color: #ececec;
 }
 
 .logo-slidebar {
@@ -266,7 +266,12 @@ body {
   font-weight: bold;
   color: black;
   text-align: left;
-  margin-top: 30px;
+  margin-left: 16px;
+}
+
+.current-date:hover {
+  transition: transform 0.2s ease, color 0.3s ease;
+  color: #1b89ff;
 }
 
 /* Botón para crear tabla */
@@ -278,6 +283,8 @@ body {
   cursor: pointer;
   font-size: 14px;
   transition: background-color 0.3s, transform 0.2s ease-in-out;
+  font-weight: bold;
+  margin-left: 16px;
 }
 
 .create-table-button:hover {
@@ -289,9 +296,10 @@ body {
   transform: scale(1);
 }
 
-.current-date:hover {
-  transition: transform 0.2s ease, color 0.3s ease;
-  color: #1b89ff;
+.title-page{
+  color: #000000;
+  text-align: center;
+  margin-bottom: -50px;
 }
 
 /* Tabla */
@@ -334,7 +342,8 @@ th {
   margin-right: 5px;
   font-size: 14px;
   text-transform: uppercase;
-  text-align: center; /* Centra el contenido de las celdas de encabezado */
+  text-align: center;
+  font-weight: bold;
 }
 
 td {
@@ -347,7 +356,7 @@ td {
 }
 
 td input {
-  width: 120%;
+  width: 100%;
   padding: 10px;
   border: 1px solid #f9f9f9;
   font-size: 12px;
@@ -434,6 +443,8 @@ table.service-table select {
   padding: 5px;
   box-sizing: border-box;
 }
+
+
 
 /* Styles for the filters container */
 .filters {
@@ -790,3 +801,4 @@ button.delete-button:hover {
   background-color: #bd2130;
   transform: scale(1);
 }
+ 

@@ -9,6 +9,8 @@ const Homepage = () => {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("user"));
   const [data, setData] = useState([]);
+  const [users, setUsers] = useState([]);
+  const [clients, setClients] = useState([]);
   const [showSidebar, setShowSidebar] = useState(false);
   const sidebarRef = useRef(null);
 
@@ -53,15 +55,7 @@ const Homepage = () => {
     const unsubscribe = onValue(dbRef, (snapshot) => {
       if (snapshot.exists()) {
         const fetchedData = Object.entries(snapshot.val());
-
-        // Ordenar alfabéticamente por la columna "realizadopor"
-        const sortedData = fetchedData.sort(([_, a], [__, b]) => {
-          const nameA = a.realizadopor ? a.realizadopor.toLowerCase() : "";
-          const nameB = b.realizadopor ? b.realizadopor.toLowerCase() : "";
-          return nameA.localeCompare(nameB);
-        });
-
-        setData(sortedData);
+        setData(fetchedData);
       } else {
         setData([]);
       }
@@ -70,7 +64,41 @@ const Homepage = () => {
     return () => unsubscribe();
   }, []);
 
-  const addData = (
+  useEffect(() => {
+    const dbRef = ref(database, "users");
+    const unsubscribe = onValue(dbRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const fetchedUsers = Object.entries(snapshot.val())
+          .filter(([_, user]) => user.role !== "admin")
+          .map(([id, user]) => ({ id, name: user.name }));
+        setUsers(fetchedUsers);
+      } else {
+        setUsers([]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const dbRef = ref(database, "clientes");
+    const unsubscribe = onValue(dbRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const fetchedClients = Object.entries(snapshot.val()).map(([id, client]) => ({
+          id,
+          direccion: client.direccion,
+          cubicos: client.cubicos,
+        }));
+        setClients(fetchedClients);
+      } else {
+        setClients([]);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const addData = async (
     realizadopor,
     anombrede,
     direccion,
@@ -85,7 +113,8 @@ const Homepage = () => {
   ) => {
     const dbRef = ref(database, "data");
     const newDataRef = push(dbRef);
-    set(newDataRef, {
+
+    await set(newDataRef, {
       realizadopor,
       anombrede,
       direccion,
@@ -100,19 +129,66 @@ const Homepage = () => {
     }).catch((error) => {
       console.error("Error adding data: ", error);
     });
-  };
 
-  const deleteData = (id) => {
-    const dbRef = ref(database, `data/${id}`);
-    remove(dbRef).catch((error) => {
-      console.error("Error deleting data: ", error);
-    });
+    // Sincronizar con "clientes"
+    syncWithClients(direccion, cubicos);
   };
 
   const handleFieldChange = (id, field, value) => {
     const dbRef = ref(database, `data/${id}`);
     update(dbRef, { [field]: value }).catch((error) => {
       console.error("Error updating data: ", error);
+    });
+
+    // Actualizar cúbicos automáticamente cuando cambia la dirección
+    if (field === "direccion") {
+      const matchingClient = clients.find((client) => client.direccion === value);
+      if (matchingClient) {
+        handleFieldChange(id, "cubicos", matchingClient.cubicos);
+      }
+    }
+
+    // Sincronizar cambios en cúbicos hacia "clientes"
+    if (field === "cubicos") {
+      const dataItem = data.find(([itemId]) => itemId === id);
+      if (dataItem) {
+        const [, item] = dataItem;
+        syncWithClients(item.direccion, value);
+      }
+    }
+  };
+
+  const syncWithClients = (direccion, cubicos) => {
+    // Verificar si el cliente ya existe en "clientes"
+    const existingClient = clients.find((client) => client.direccion === direccion);
+
+    if (existingClient) {
+      // Actualizar los cúbicos si es necesario
+      if (existingClient.cubicos !== cubicos) {
+        const clientRef = ref(database, `clientes/${existingClient.id}`);
+        update(clientRef, { cubicos }).catch((error) => {
+          console.error("Error updating client: ", error);
+        });
+      }
+    } else {
+      // Agregar un nuevo cliente si no existe
+      addClient(direccion, cubicos);
+    }
+  };
+
+  const addClient = (direccion, cubicos) => {
+    const dbRef = ref(database, "clientes");
+    const newClientRef = push(dbRef);
+
+    set(newClientRef, { direccion, cubicos }).catch((error) => {
+      console.error("Error adding client: ", error);
+    });
+  };
+
+  const deleteData = (id) => {
+    const dbRef = ref(database, `data/${id}`);
+    remove(dbRef).catch((error) => {
+      console.error("Error deleting data: ", error);
     });
   };
 
@@ -134,20 +210,6 @@ const Homepage = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  if (!user) {
-    return (
-      <div className="error-container">
-        <p className="error-message">User not logged in!</p>
-        <input
-          type="button"
-          value="Redirecting to login"
-          onClick={() => navigate("/")}
-          readOnly
-        />
-      </div>
-    );
-  }
 
   const capitalizeWords = (str) => {
     return str.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
@@ -186,27 +248,39 @@ const Homepage = () => {
           </h1>
         </div>
         <div>
-          {/* Mostrar el nombre del usuario si está disponible */}
           {user && user.name ? <p>Hola!, {user.name}</p> : <p>No user</p>}
         </div>
         <button className="menu-item" onClick={() => navigate("/homepage")}>
-          Hoja De Servicios Administrador
+          Servicios De Hoy
         </button>
         <button className="menu-item" onClick={() => navigate("/hojamañana")}>
-          Hoja Mañana Administrador
+          Servicios De Mañana
         </button>
         <button className="menu-item" onClick={() => navigate("/hojadefechas")}>
-          Hoja De Fechas
+          Agenda Dinamica
+        </button>
+        <button className="menu-item" onClick={() => navigate("/clientes")}>
+          Clientes "Desarrollo"
         </button>
         <button className="menu-item" onClick={() => navigate("/")}>
           Reprogramación Automatica "PENDIETE"
         </button>
+        <button className="menu-item" onClick={() => navigate("/")}>
+          Generar Informes "PENDIETE"
+        </button>
+        <button className="menu-item" onClick={() => navigate("/")}>
+          Configuración "PENDIETE"
+        </button>
         <button className="menu-item" onClick={handleLogout}>
           Logout
         </button>
+        <div>
+          <p>© 2025 S&K Global Services</p>
+        </div>
       </div>
 
       <div className="homepage-card">
+        <h1 className="title-page">Servicios De Hoy</h1>
         <div className="current-date">
           <div>{currentDateTime.date}</div>
           <div>{currentDateTime.time}</div>
@@ -243,33 +317,33 @@ const Homepage = () => {
                   return (
                     <tr key={id} className={rowClass}>
                       <td>
-                        <input
-                          type="text"
-                          list={`realizadopor-options-${id}`}
-                          value={item.realizadopor || ""}
+                        <select
+                          value={item.realizadopor}
                           onChange={(e) =>
                             handleFieldChange(
                               id,
                               "realizadopor",
-                              capitalizeWords(e.target.value)
+                              e.target.value
                             )
                           }
-                          className="autocomplete-input"
-                        />
-                        <datalist id={`realizadopor-options-${id}`}>
-                          {data
-                            .map(([_, i]) => i.realizadopor)
-                            .filter((v, i, a) => a.indexOf(v) === i && v) // Evitar duplicados y valores vacíos
-                            .map((name, index) => (
-                              <option key={index} value={capitalizeWords(name)}>
-                                {capitalizeWords(name)}
-                              </option>
-                            ))}
-                        </datalist>
+                        >
+                          <option value=""></option>
+                          {users.map((user) => (
+                            <option key={user.id} value={user.name}>
+                              {user.name}
+                            </option>
+                          ))}
+                        </select>
                       </td>
                       <td>
                         <input
                           type="text"
+                          style={{
+                            width: `${Math.max(
+                              item.anombrede?.length || 1,
+                              15
+                            )}ch`,
+                          }}
                           value={item.anombrede}
                           onChange={(e) =>
                             handleFieldChange(id, "anombrede", e.target.value)
@@ -277,26 +351,76 @@ const Homepage = () => {
                         />
                       </td>
                       <td>
-                        <input
-                          type="text"
-                          value={item.direccion}
-                          onChange={(e) =>
-                            handleFieldChange(id, "direccion", e.target.value)
-                          }
-                        />
+                        <div className="custom-select-container">
+                          <input
+                            type="text"
+                            style={{
+                              width: `${Math.max(
+                                item.direccion?.length || 1,
+                                15
+                              )}ch`,
+                            }}
+                            value={item.direccion || ""}
+                            onChange={(e) =>
+                              handleFieldChange(
+                                id,
+                                "direccion",
+                                capitalizeWords(e.target.value)
+                              )
+                            }
+                            onFocus={(e) =>
+                              e.target.setAttribute(
+                                "list",
+                                `direccion-options-${id}`
+                              )
+                            }
+                            onBlur={(e) =>
+                              setTimeout(
+                                () => e.target.removeAttribute("list"),
+                                200
+                              )
+                            }
+                            className="custom-select-input"
+                          />
+                          <datalist id={`direccion-options-${id}`}>
+                            {Array.from(
+                              new Set(
+                                clients // Cambiado para que use los datos de "clients" en lugar de "data"
+                                  .map((client) => client.direccion) // Obtener solo las direcciones de los clientes
+                                  .filter((direccion) => direccion) // Filtrar direcciones válidas
+                              )
+                            ).map((direccion, index) => (
+                              <option
+                                key={index}
+                                value={capitalizeWords(direccion)}
+                              >
+                                {capitalizeWords(direccion)}
+                              </option>
+                            ))}
+                          </datalist>
+                        </div>
                       </td>
+
                       <td>
-                        <input
-                          type="text"
+                        <select
                           value={item.servicio}
+                          style={{ width: "15ch" }}
                           onChange={(e) =>
                             handleFieldChange(id, "servicio", e.target.value)
                           }
-                        />
+                        >
+                          <option value=""></option>
+                          <option value="Servicio 1">Servicio 1</option>
+                          <option value="Servicio 2">Servicio 2</option>
+                          <option value="Servicio 3">Servicio 3</option>
+                          <option value="Servicio 4">Servicio 4</option>
+                          <option value="Servicio 5">Servicio 5</option>
+                        </select>
                       </td>
                       <td>
                         <input
                           type="number"
+                          style={{ width: "12ch" }}
                           value={item.cubicos}
                           onChange={(e) =>
                             handleFieldChange(id, "cubicos", e.target.value)
@@ -315,14 +439,18 @@ const Homepage = () => {
                       <td>
                         <select
                           value={item.pago}
+                          style={{ width: "22ch" }}
                           onChange={(e) =>
                             handleFieldChange(id, "pago", e.target.value)
                           }
                         >
                           <option value=""></option>
-                          <option value="credito">Crédito</option>
-                          <option value="cancelado">Cancelado</option>
-                          <option value="efectivo">Efectivo</option>
+                          <option value="Debe">Debe</option>
+                          <option value="Pago">Pago</option>
+                          <option value="Pendiente">Pendiente</option>
+                          <option value="Pendiente Fin De Mes">
+                            Pendiente Fin De Mes
+                          </option>
                         </select>
                       </td>
                       <td>
@@ -336,6 +464,9 @@ const Homepage = () => {
                       <td>
                         <input
                           type="text"
+                          style={{
+                            width: `${Math.max(item.notas?.length || 1, 15)}ch`,
+                          }}
                           value={item.notas}
                           onChange={(e) =>
                             handleFieldChange(id, "notas", e.target.value)
@@ -362,6 +493,7 @@ const Homepage = () => {
                       <td>
                         <input
                           type="number"
+                          style={{ width: "10ch" }}
                           value={item.efectivo}
                           onChange={(e) =>
                             handleFieldChange(id, "efectivo", e.target.value)
@@ -372,6 +504,7 @@ const Homepage = () => {
                       <td>
                         <input
                           type="checkbox"
+                          style={{ width: "10ch" }}
                           checked={item.factura === true}
                           onChange={(e) =>
                             handleFieldChange(id, "factura", e.target.checked)

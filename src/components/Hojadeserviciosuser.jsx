@@ -146,6 +146,7 @@ const Homepageuser = () => {
               <tr>
                 <th>ID</th>
                 <th>Email</th>
+                <th>Name</th>
                 <th>Password</th>
                 <th>Actions</th>
               </tr>
@@ -161,6 +162,15 @@ const Homepageuser = () => {
                         value={item.email}
                         onChange={(e) =>
                           handleFieldChange(id, "email", e.target.value)
+                        }
+                      />
+                    </td>
+                    <td>
+                      <input
+                        type="text"
+                        value={item.name}
+                        onChange={(e) =>
+                          handleFieldChange(id, "name", e.target.value)
                         }
                       />
                     </td>
