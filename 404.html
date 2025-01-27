@@ -5,19 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Redirection</title>
     <script>
-      // Redirige a la página principal con el hash router
-      const baseUrl = "https://skglobalservices.github.io/OopsOutSepticTankYServicesAruba/#/";
-      const currentPath = window.location.pathname + window.location.search;
-
-      // Si no hay una ruta válida, redirige al inicio
-      if (!currentPath || currentPath === "/" || currentPath === "/404.html") {
-        window.location.href = baseUrl;
-      } else {
-        window.location.href = baseUrl + currentPath;
-      }
+      // Redirige a la página principal
+      const baseUrl = "https://skglobalservices.github.io/OopsOutSepticTankYServicesAruba/";
+      // Siempre redirige al inicio del sitio
+      window.location.href = baseUrl;
     </script>
   </head>
   <body>
-    <p>Redirigiendo...</p>
+    <p>Redirigiendo a la página principal...</p>
   </body>
 </html>
